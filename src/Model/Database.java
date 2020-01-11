@@ -24,7 +24,7 @@ public class Database {
                 + "    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
                 + "    FullName TEXT NOT NULL,\n"
                 + "    Mark FLOAT,\n"
-                + "    Date STRING\n"
+                + "    Date INTEGER\n"
                 + ");";
         Statement statement = connection.createStatement();
         statement.execute(SQL_CREATE_SINHVIEN_TABLE);

@@ -4,19 +4,19 @@ public class SinhVien {
     private int ID;
     private String FullName;
     private float Mark;
-    private  String Date;
+    private  long Date;
     private String image;
     public SinhVien(Integer fullname, String mark){
 
     }
-    public SinhVien(int ID , String FullName, float Mark, String Date, String image){
+    public SinhVien(int ID , String FullName, float Mark, long Date, String image){
         this.ID = ID;
         this.FullName=FullName;
         this.Mark = Mark;
         this.Date = Date;
         this.image = image;
     }
-    public SinhVien(int ID , String FullName, float Mark, String Date){
+    public SinhVien(int ID , String FullName, float Mark, long Date){
         this.ID = ID;
         this.FullName=FullName;
         this.Mark = Mark;
@@ -24,7 +24,7 @@ public class SinhVien {
 
     }
 
-    public SinhVien(String FullName, float Mark, String Date,String image) {
+    public SinhVien(String FullName, float Mark, long Date,String image) {
         this.FullName=FullName;
         this.Mark = Mark;
         this.Date = Date;
@@ -50,7 +50,7 @@ public class SinhVien {
 
     public float getMark() {return  Mark; }
 
-    public String getDate() {return Date;}
+    public long getDate() {return Date;}
 
     public void setID(int ID) {
         this.ID = ID;
@@ -63,7 +63,7 @@ public class SinhVien {
     public void setMark(float mark){
         Mark = mark;
     }
-    public void setDate(String date){
+    public void setDate(long date){
         Date = date;
     }
 }

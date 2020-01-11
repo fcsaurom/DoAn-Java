@@ -7,9 +7,13 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,7 +35,6 @@ public class ListSinhVien extends  JFrame {
     private JTextField mark;
     private JTextField name;
     private JLabel picture;
-    private JButton search;
     private JTextField idSearch;
     private JPanel bodypanel;
     private SinhVienModel model;
@@ -49,28 +52,26 @@ public class ListSinhVien extends  JFrame {
         id.setText(Integer.toString(model.getAllSinhVien().get(index).getID()));
         name.setText(model.getAllSinhVien().get(index).getFullName());
         mark.setText(Float.toString(model.getAllSinhVien().get(index).getMark()));
+        path =model.getAllSinhVien().get(index).getImage();
         Image images  =  new ImageIcon(model.getAllSinhVien().get(index).getImage()).getImage();
         ImageIcon icon = new ImageIcon(images);
         picture.setIcon(icon);
         picture.setIcon(resize(null, images));
+        Date dates= null;
+        DateFormat simple = new SimpleDateFormat("dd MMM yyyy HH:mm:ss:SSS Z");
+        dates =new Date(model.getAllSinhVien().get(index).getDate());
+        simple.format(dates);
 
-
-//        Date dates= null;
-//        try {
-//            dates = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(model.getAllSinhVien().get(index).getDate());
-//            cld.setTime(dates);
-//            datechoser=new JDateChooser(cld.getTime());
-//            datechoser.setDateFormatString("dd/MM/yyyy");
-//            date.removeAll();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        date.add(datechoser);
+        cld.setTime(dates);
+        datechoser=new JDateChooser(cld.getTime());
+        datechoser.setDateFormatString("dd/MM/yyyy");
+        date.removeAll();
+        date.add(datechoser);
 
     }
 
     void clear(){
-        id.setText("");
+
         name.setText("");
         mark.setText("");
         path = null;
@@ -158,7 +159,7 @@ public class ListSinhVien extends  JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (!name.getText().isEmpty() && !mark.getText().isEmpty()){
                     String Fullname = name.getText();
-                    String dates = datechoser.getDate().toString();
+                    long dates = datechoser.getDate().getTime();
 
                     String link = path;
                   SinhVien newSinhvien = new SinhVien(Fullname,marks,dates,link);
@@ -192,26 +193,14 @@ public class ListSinhVien extends  JFrame {
                 }
             }
         });
-        /*tableSinhVien.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int index =tableSinhVien.getSelectedRow();
-                if (e.getClickCount() >= 2){
-                    int ids = (int) modelTable.getValueAt(index,0);
-                    SinhVienController sinhVienController = new SinhVienController(rootpanel,model.getSinhVienByID(ids),new UpdateSV());
-                    sinhVienController.showinfo();
-                }
 
-
-            }
-        }); */
         update.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (!name.getText().isEmpty() && !mark.getText().isEmpty() && !id.getText().isEmpty()){
                     Integer Id = Integer.valueOf(id.getText());
                     String Fullname = name.getText();
-                    String dates =datechoser.getDate().toString();
+                    long dates =datechoser.getDate().getTime();
                     String link = path;
                     SinhVien upSinhvien = new SinhVien(Id,Fullname,marks,dates,link);
                     SinhVienModel updateSV= new Model.SinhVienModel();
@@ -292,27 +281,16 @@ public class ListSinhVien extends  JFrame {
         idSearch.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-               try{
-                    idSearchSv  = Integer.parseInt(idSearch.getText());
-               }
-               catch (Exception es){
-                   idSearch.setText("");
-               }
-            }
-        });
-        search.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                int ids = Integer.parseInt(idSearch.getText());
-                SinhVien sv = model.getSinhVienByID(idSearchSv);
-                Model.SinhVien diem = getById(ids);
-                if (sv !=null ){
-                    JOptionPane.showMessageDialog(null,"Name: "+sv.getFullName()+"\nMark: "+diem.getMark());
-                }
-                else {
-                    JOptionPane.showMessageDialog(null,"Not Found!");
-                }
+                TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(tableSinhVien.getModel());
+                String text = idSearch.getText();
+                if (text.trim().length() == 0) {
 
+                    rowSorter.setRowFilter(null);
+                } else {
+
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+                tableSinhVien.setRowSorter(rowSorter);
             }
         });
     }

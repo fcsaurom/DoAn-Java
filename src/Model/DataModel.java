@@ -23,10 +23,9 @@ public class DataModel implements DAOSinhVien {
             PreparedStatement ps = db.getConnection().prepareStatement(SQL_CREATE_SINHVIEN, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, sinhVien.getFullName());
             ps.setFloat(2, sinhVien.getMark());
-            ps.setString(3,sinhVien.getDate());
+            ps.setLong(3,sinhVien.getDate());
             ps.setString(4,sinhVien.getImage());
             ps.executeUpdate();
-
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 int id = rs.getInt(1);
@@ -53,7 +52,7 @@ public class DataModel implements DAOSinhVien {
                 int ids = rs.getInt(1);
                 String fullname = rs.getString(2);
                 float mark = rs.getFloat(3);
-                String date = rs.getString(4);
+                long date = rs.getLong(4);
                 sinhVien = new SinhVien(ids,fullname,mark,date);
             }
         } catch (Exception e) {
@@ -77,7 +76,7 @@ public class DataModel implements DAOSinhVien {
                 int id = rs.getInt(1);
                 String fullname = rs.getString(2);
                 float mark = rs.getFloat(3);
-                String date = rs.getString(4);
+                long date = rs.getLong(4);
                 String link =rs.getString(5);
                 sinhVienList.add(new SinhVien(id,fullname,mark,date,link));
             }
@@ -91,14 +90,15 @@ public class DataModel implements DAOSinhVien {
     @Override
     public void Update(SinhVien sinhVien) {
         Database db = new Database();
-        final String SQL_UPDATE_SINHVIEN_BY_ID = "UPDATE SinhVienTable SET FullName = ?, Mark = ?, Date = ? WHERE Id = ?";
+        final String SQL_UPDATE_SINHVIEN_BY_ID = "UPDATE SinhVienTable SET FullName = ?, Mark = ?, Date = ?, Avatar = ? WHERE Id = ?";
         PreparedStatement ps = null;
         try {
             ps = db.getConnection().prepareStatement(SQL_UPDATE_SINHVIEN_BY_ID);
             ps.setString(1, sinhVien.getFullName());
             ps.setFloat(2, sinhVien.getMark());
-            ps.setString(3,sinhVien.getDate());
-            ps.setInt(4, sinhVien.getID());
+            ps.setLong(3,sinhVien.getDate());
+            ps.setInt(5, sinhVien.getID());
+            ps.setString(4,sinhVien.getImage());
             ps.executeUpdate();
             if (ps.executeUpdate() != 0)
             {
